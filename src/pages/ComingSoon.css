@@ -1,0 +1,46 @@
+.coming-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.cs-title {
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f0f0f0;
+}
+
+.cs-sub {
+  font-size: 1.1rem;
+  color: #555;
+  letter-spacing: 0.06em;
+}
+
+.cs-back {
+  margin-top: 1rem;
+  padding: 0.75rem 2rem;
+  background: #1e1e1e;
+  color: #f0f0f0;
+  border: 2px solid #333;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cs-back:hover {
+  background: #2a2a2a;
+  border-color: #555;
+}
+
+.cs-back:active {
+  transform: scale(0.96);
+}

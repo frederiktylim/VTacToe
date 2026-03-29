@@ -1,0 +1,100 @@
+.game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  gap: 1.5rem;
+}
+
+.title {
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #f0f0f0;
+}
+
+.status {
+  font-size: clamp(1rem, 3.5vw, 1.3rem);
+  font-weight: 500;
+  min-height: 1.8em;
+  text-align: center;
+  color: #aaa;
+  transition: color 0.2s;
+}
+
+.status.winner {
+  color: #f0f0f0;
+  font-weight: 700;
+}
+
+.reset-btn {
+  padding: 0.75rem 2.5rem;
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  background: #1e1e1e;
+  color: #f0f0f0;
+  border: 2px solid #333;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.reset-btn:hover {
+  background: #2a2a2a;
+  border-color: #555;
+}
+
+.reset-btn:active {
+  transform: scale(0.96);
+}
+
+.scoreboard {
+  display: flex;
+  gap: 2rem;
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
+}
+
+.score-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.score-label {
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.score-num {
+  font-size: 1.4em;
+  font-weight: 700;
+}
+
+.score-item.x .score-label,
+.score-item.x .score-num { color: #e05252; }
+
+.score-item.o .score-label,
+.score-item.o .score-num { color: #52a8e0; }
+
+.score-item.draw .score-label,
+.score-item.draw .score-num { color: #888; }
+
+.back-btn {
+  font-size: 0.9rem;
+  color: #555;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.4rem 0.8rem;
+  transition: color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.back-btn:hover {
+  color: #aaa;
+}

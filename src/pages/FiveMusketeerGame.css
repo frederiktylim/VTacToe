@@ -1,0 +1,124 @@
+.fm-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  gap: 1rem;
+  min-height: 100dvh;
+  justify-content: center;
+}
+
+.fm-title {
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #f0f0f0;
+}
+
+.fm-status {
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
+  font-weight: 500;
+  min-height: 1.6em;
+  text-align: center;
+  color: #aaa;
+  transition: color 0.2s;
+}
+
+.fm-status.winner {
+  color: #f0f0f0;
+  font-weight: 700;
+}
+
+/* ── Board layout ── */
+.fm-boards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Each row is a flex row — auto-centering the 2-board row inside
+   the column puts each board at the exact midpoint between its two
+   neighbours in the row above. */
+.fm-row {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* ── Board card ── */
+.fm-board-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background:
+    linear-gradient(#0f0f0f, #0f0f0f) padding-box,
+    linear-gradient(135deg, #e05252, #52a8e0) border-box;
+  border: 6px solid transparent;
+  border-radius: 18px;
+  padding: 6px;
+  width: fit-content;
+}
+
+/* ── Board size ── */
+.board--fm {
+  width: min(27vw, 180px);
+}
+
+@media (max-width: 480px) {
+  .board--fm {
+    width: min(26vw, 180px);
+  }
+}
+
+/* Cell font scaled for smaller boards */
+.board--fm .cell {
+  font-size: clamp(0.9rem, 5vw, 1.8rem);
+}
+
+/* ── Board container (holds board + overlay) ── */
+.fm-board-wrap .board-container {
+  position: relative;
+}
+
+/* ── Result overlay (reuses triple game classes) ── */
+.fm-board-wrap .board-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  animation: overlay-appear 0.3s ease-out 0.35s both;
+  pointer-events: none;
+}
+
+.fm-board-wrap .overlay-X    { background: rgba(224, 82,  82,  0.18); }
+.fm-board-wrap .overlay-O    { background: rgba(82,  168, 224, 0.18); }
+.fm-board-wrap .overlay-draw { background: rgba(136, 136, 136, 0.12); }
+
+.fm-board-wrap .overlay-symbol {
+  font-weight: 900;
+  font-size: min(8rem, 27vw);
+  line-height: 1;
+  opacity: 0.7;
+}
+
+.fm-board-wrap .overlay-x { color: #e05252; }
+.fm-board-wrap .overlay-o { color: #52a8e0; }
+
+.fm-board-wrap .overlay-minus {
+  width: 55%;
+  height: 12px;
+  background: #888;
+  border-radius: 6px;
+  opacity: 0.7;
+}
+
+/* ── Controls ── */
+.fm-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}

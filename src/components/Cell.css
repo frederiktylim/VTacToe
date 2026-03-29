@@ -1,0 +1,42 @@
+.cell {
+  aspect-ratio: 1;
+  background: #1e1e1e;
+  border: 2px solid #2e2e2e;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(2rem, 12vw, 4rem);
+  font-weight: 700;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cell:hover:not(.taken) {
+  background: #2a2a2a;
+  border-color: #444;
+}
+
+.cell:active:not(.taken) {
+  transform: scale(0.94);
+}
+
+.cell.taken {
+  cursor: default;
+}
+
+.cell.x {
+  color: #e05252;
+}
+
+.cell.o {
+  color: #52a8e0;
+}
+
+.cell.win {
+  background: #252525;
+  border-color: #555;
+}

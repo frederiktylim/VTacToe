@@ -1,0 +1,109 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: overlay-in 0.2s ease-out;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal-card {
+  position: relative;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 20px;
+  padding: 2.5rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+  min-width: 280px;
+  max-width: 90vw;
+  animation: card-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: #aaa;
+  background: #2a2a2a;
+}
+
+.modal-headline {
+  font-size: clamp(1.8rem, 6vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin: 0;
+  color: #f0f0f0;
+}
+
+.modal-headline--X    { color: #e05252; }
+.modal-headline--O    { color: #52a8e0; }
+.modal-headline--draw { color: #aaa; }
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.modal-btn {
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
+  border: 2px solid transparent;
+}
+
+.modal-btn:active {
+  transform: scale(0.96);
+}
+
+.modal-btn--primary {
+  background: #f0f0f0;
+  color: #0f0f0f;
+  border-color: #f0f0f0;
+}
+
+.modal-btn--primary:hover {
+  background: #ddd;
+  border-color: #ddd;
+}
+
+.modal-btn--secondary {
+  background: transparent;
+  color: #f0f0f0;
+  border-color: #444;
+}
+
+.modal-btn--secondary:hover {
+  background: #2a2a2a;
+  border-color: #666;
+}
