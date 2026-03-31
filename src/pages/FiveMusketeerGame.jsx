@@ -23,11 +23,15 @@ function checkBoard(squares) {
 function overallResult(results) {
   const xWins = results.filter(r => r?.winner === 'X').length
   const oWins = results.filter(r => r?.winner === 'O').length
-  // End early the moment someone reaches 3
   if (xWins >= 3) return 'X'
   if (oWins >= 3) return 'O'
-  // Draw only when all 5 boards are decided and nobody has 3
-  if (results.every(r => r !== null)) return 'draw'
+  if (results.every(r => r !== null)) {
+    const xPoints = results.reduce((s, r) => s + (r.winner === 'X' ? 1 : r.winner === 'draw' ? 0.5 : 0), 0)
+    const oPoints = results.reduce((s, r) => s + (r.winner === 'O' ? 1 : r.winner === 'draw' ? 0.5 : 0), 0)
+    if (xPoints > oPoints) return 'X'
+    if (oPoints > xPoints) return 'O'
+    return 'draw'
+  }
   return null
 }
 
@@ -40,8 +44,6 @@ export default function FiveMusketeerGame() {
   const [current, setCurrent] = useState('X')
   const [gameResult, setGameResult] = useState(null)
   const [showModal, setShowModal] = useState(false)
-  const [scores, setScores] = useState({ X: 0, O: 0, D: 0 })
-
   function handlePlay(boardIdx, cellIdx) {
     if (gameResult) return
     if (boardResults[boardIdx]) return
@@ -62,10 +64,6 @@ export default function FiveMusketeerGame() {
     if (overall !== null) {
       setGameResult(overall)
       setShowModal(true)
-      setScores(s => ({
-        ...s,
-        [overall === 'draw' ? 'D' : overall]: s[overall === 'draw' ? 'D' : overall] + 1,
-      }))
     } else {
       setCurrent(c => (c === 'X' ? 'O' : 'X'))
     }
@@ -129,21 +127,6 @@ export default function FiveMusketeerGame() {
       <div className="fm-controls">
         <button className="reset-btn" onClick={handleReset}>New Game</button>
         <button className="back-btn" onClick={() => navigate('/')}>Menu</button>
-      </div>
-
-      <div className="scoreboard">
-        <div className="score-item x">
-          <span className="score-label">X</span>
-          <span className="score-num">{scores.X}</span>
-        </div>
-        <div className="score-item draw">
-          <span className="score-label">Draws</span>
-          <span className="score-num">{scores.D}</span>
-        </div>
-        <div className="score-item o">
-          <span className="score-label">O</span>
-          <span className="score-num">{scores.O}</span>
-        </div>
       </div>
 
       {showModal && (

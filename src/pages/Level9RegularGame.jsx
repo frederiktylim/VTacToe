@@ -26,8 +26,10 @@ function overallResult(results) {
   if (xWins >= 5) return 'X'
   if (oWins >= 5) return 'O'
   if (results.every(r => r !== null)) {
-    if (xWins > oWins) return 'X'
-    if (oWins > xWins) return 'O'
+    const xPoints = results.reduce((s, r) => s + (r.winner === 'X' ? 1 : r.winner === 'draw' ? 0.5 : 0), 0)
+    const oPoints = results.reduce((s, r) => s + (r.winner === 'O' ? 1 : r.winner === 'draw' ? 0.5 : 0), 0)
+    if (xPoints > oPoints) return 'X'
+    if (oPoints > xPoints) return 'O'
     return 'draw'
   }
   return null
@@ -42,8 +44,6 @@ export default function Level9RegularGame() {
   const [current, setCurrent] = useState('X')
   const [gameResult, setGameResult] = useState(null)
   const [showModal, setShowModal] = useState(false)
-  const [scores, setScores] = useState({ X: 0, O: 0, D: 0 })
-
   function handlePlay(boardIdx, cellIdx) {
     if (gameResult) return
     if (boardResults[boardIdx]) return
@@ -64,10 +64,6 @@ export default function Level9RegularGame() {
     if (overall !== null) {
       setGameResult(overall)
       setShowModal(true)
-      setScores(s => ({
-        ...s,
-        [overall === 'draw' ? 'D' : overall]: s[overall === 'draw' ? 'D' : overall] + 1,
-      }))
     } else {
       setCurrent(c => (c === 'X' ? 'O' : 'X'))
     }
@@ -125,21 +121,6 @@ export default function Level9RegularGame() {
       <div className="l9-controls">
         <button className="reset-btn" onClick={handleReset}>New Game</button>
         <button className="back-btn" onClick={() => navigate('/level-9')}>Menu</button>
-      </div>
-
-      <div className="scoreboard">
-        <div className="score-item x">
-          <span className="score-label">X</span>
-          <span className="score-num">{scores.X}</span>
-        </div>
-        <div className="score-item draw">
-          <span className="score-label">Draws</span>
-          <span className="score-num">{scores.D}</span>
-        </div>
-        <div className="score-item o">
-          <span className="score-label">O</span>
-          <span className="score-num">{scores.O}</span>
-        </div>
       </div>
 
       {showModal && (

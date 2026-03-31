@@ -24,7 +24,6 @@ export default function RegularGame() {
   const navigate = useNavigate()
   const [squares, setSquares] = useState(Array(9).fill(null))
   const [current, setCurrent] = useState('X')
-  const [scores, setScores] = useState({ X: 0, O: 0, D: 0 })
   const [result, setResult] = useState(null)
   const [showModal, setShowModal] = useState(false)
 
@@ -37,11 +36,6 @@ export default function RegularGame() {
     if (gameResult) {
       setResult(gameResult)
       setShowModal(true)
-      if (gameResult.winner === 'draw') {
-        setScores(s => ({ ...s, D: s.D + 1 }))
-      } else {
-        setScores(s => ({ ...s, [gameResult.winner]: s[gameResult.winner] + 1 }))
-      }
     } else {
       setCurrent(c => (c === 'X' ? 'O' : 'X'))
     }
@@ -66,20 +60,6 @@ export default function RegularGame() {
       </p>
       <Board squares={squares} winLine={result?.line ?? null} onPlay={handlePlay} />
       <button className="reset-btn" onClick={handleReset}>New Game</button>
-      <div className="scoreboard">
-        <div className="score-item x">
-          <span className="score-label">X</span>
-          <span className="score-num">{scores.X}</span>
-        </div>
-        <div className="score-item draw">
-          <span className="score-label">Draws</span>
-          <span className="score-num">{scores.D}</span>
-        </div>
-        <div className="score-item o">
-          <span className="score-label">O</span>
-          <span className="score-num">{scores.O}</span>
-        </div>
-      </div>
       <button className="back-btn" onClick={() => navigate('/')}>Menu</button>
 
       {showModal && (

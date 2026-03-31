@@ -46,10 +46,10 @@ function overallResult(results) {
   if (oLine) return { winner: 'O', metaLine: oLine }
 
   if (results.every(r => r !== null)) {
-    const xWins = results.filter(r => r?.winner === 'X').length
-    const oWins = results.filter(r => r?.winner === 'O').length
-    if (xWins > oWins) return { winner: 'X', metaLine: null }
-    if (oWins > xWins) return { winner: 'O', metaLine: null }
+    const xPoints = results.reduce((s, r) => s + (r?.winner === 'X' ? 1 : r?.winner === 'draw' ? 0.5 : 0), 0)
+    const oPoints = results.reduce((s, r) => s + (r?.winner === 'O' ? 1 : r?.winner === 'draw' ? 0.5 : 0), 0)
+    if (xPoints > oPoints) return { winner: 'X', metaLine: null }
+    if (oPoints > xPoints) return { winner: 'O', metaLine: null }
     return { winner: 'draw', metaLine: null }
   }
   return null
@@ -66,7 +66,6 @@ export default function Level9DifferentSpotGame() {
   const [metaWinLine, setMetaWinLine] = useState(null)
   const [showModal, setShowModal] = useState(false)
   const [showRules, setShowRules] = useState(false)
-  const [scores, setScores] = useState({ X: 0, O: 0, D: 0 })
   const [lastBoardByPlayer, setLastBoardByPlayer] = useState({ X: null, O: null })
   const [showCantDoThat, setShowCantDoThat] = useState(false)
 
@@ -115,11 +114,6 @@ export default function Level9DifferentSpotGame() {
       setGameResult(overall.winner)
       setMetaWinLine(overall.metaLine)
       setShowModal(true)
-      setScores(s => ({
-        ...s,
-        [overall.winner === 'draw' ? 'D' : overall.winner]:
-          s[overall.winner === 'draw' ? 'D' : overall.winner] + 1,
-      }))
     } else {
       setCurrent(c => (c === 'X' ? 'O' : 'X'))
     }
@@ -193,21 +187,6 @@ export default function Level9DifferentSpotGame() {
         <button className="reset-btn" onClick={handleReset}>New Game</button>
         <button className="back-btn" onClick={() => navigate('/level-9')}>Menu</button>
         <button className="rules-btn" onClick={() => setShowRules(true)}>Rules</button>
-      </div>
-
-      <div className="scoreboard">
-        <div className="score-item x">
-          <span className="score-label">X</span>
-          <span className="score-num">{scores.X}</span>
-        </div>
-        <div className="score-item draw">
-          <span className="score-label">Draws</span>
-          <span className="score-num">{scores.D}</span>
-        </div>
-        <div className="score-item o">
-          <span className="score-label">O</span>
-          <span className="score-num">{scores.O}</span>
-        </div>
       </div>
 
       {showModal && (
