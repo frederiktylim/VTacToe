@@ -16,6 +16,10 @@ export default function Level9Menu() {
           <span className="l9-mode-label">Level 9 (3 in a Row)</span>
           <span className="l9-mode-desc">9 boards · get 3 boards in a row</span>
         </button>
+        <button className="l9-mode-btn" onClick={() => navigate('/level-9/different-spot')}>
+          <span className="l9-mode-label">Nine In a Row, Different Spot</span>
+          <span className="l9-mode-desc">3 in a row · can't reuse opponent's last board</span>
+        </button>
       </div>
       <button className="back-btn" onClick={() => navigate('/')}>Menu</button>
     </div>

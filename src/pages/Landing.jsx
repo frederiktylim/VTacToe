@@ -13,7 +13,7 @@ export default function Landing() {
 
   return (
     <div className="landing">
-      <h1 className="landing-title">Tic Tac Toe</h1>
+      <h1 className="landing-title">TicTacV</h1>
       <p className="landing-sub">Choose a game mode</p>
       <div className="mode-list">
         {MODES.map(({ label, path, desc }) => (

@@ -60,7 +60,7 @@ export default function RegularGame() {
 
   return (
     <div className="game">
-      <h1 className="title">Tic Tac Toe</h1>
+      <h1 className="title">TicTacV</h1>
       <p className={`status${result?.winner && result.winner !== 'draw' ? ' winner' : ''}`}>
         {statusText}
       </p>
