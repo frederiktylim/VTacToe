@@ -69,10 +69,15 @@ export default function Level9ThreeInARowGame() {
   const [showModal, setShowModal] = useState(false)
   const [showRules, setShowRules] = useState(false)
   const [scores, setScores] = useState({ X: 0, O: 0, D: 0 })
-  const [lastPlayedBoard, setLastPlayedBoard] = useState(null)
+  const [lastPlayedByX, setLastPlayedByX] = useState(null)
+  const [lastPlayedByO, setLastPlayedByO] = useState(null)
 
   function isBoardLocked(boardIdx) {
-    return boardIdx === lastPlayedBoard
+    // Can't play on the board the opponent just played on
+    const opponentLast = current === 'X' ? lastPlayedByO : lastPlayedByX
+    // Can't play on the board you yourself played on last turn
+    const ownLast = current === 'X' ? lastPlayedByX : lastPlayedByO
+    return boardIdx === opponentLast || boardIdx === ownLast
   }
 
   function handlePlay(boardIdx, cellIdx) {
@@ -104,7 +109,8 @@ export default function Level9ThreeInARowGame() {
       }))
     } else {
       setCurrent(c => (c === 'X' ? 'O' : 'X'))
-      setLastPlayedBoard(boardIdx)
+      if (current === 'X') setLastPlayedByX(boardIdx)
+      else setLastPlayedByO(boardIdx)
     }
   }
 
@@ -114,7 +120,8 @@ export default function Level9ThreeInARowGame() {
     setCurrent('X')
     setGameResult(null)
     setMetaWinLine(null)
-    setLastPlayedBoard(null)
+    setLastPlayedByX(null)
+    setLastPlayedByO(null)
     setShowModal(false)
   }
 
@@ -209,7 +216,8 @@ export default function Level9ThreeInARowGame() {
               <p className="rules-section-head">How to play</p>
               <ul>
                 <li>Players alternate turns placing X or O on any open cell of any unfinished board.</li>
-                <li>You cannot play on the same board that was just played on in the previous turn.</li>
+                <li>You cannot play on the same board you played on in your previous turn.</li>
+                <li>You cannot play on the board your opponent just played on.</li>
                 <li>Win a board by getting three of your symbols in a row on that board.</li>
               </ul>
 
