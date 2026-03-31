@@ -70,6 +70,16 @@
   box-shadow: 0 0 14px 3px rgba(82, 168, 224, 0.55);
 }
 
+/* ── Locked board (cannot play here this turn) ── */
+.l9-board-wrap.board-locked {
+  opacity: 0.4;
+  pointer-events: none;
+  border-color: #333;
+  background:
+    linear-gradient(#0f0f0f, #0f0f0f) padding-box,
+    linear-gradient(135deg, #333, #333) border-box;
+}
+
 /* ── Board size ── */
 .board--l9 {
   width: min(28vw, 155px);

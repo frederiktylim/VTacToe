@@ -69,11 +69,17 @@ export default function Level9ThreeInARowGame() {
   const [showModal, setShowModal] = useState(false)
   const [showRules, setShowRules] = useState(false)
   const [scores, setScores] = useState({ X: 0, O: 0, D: 0 })
+  const [lastPlayedBoard, setLastPlayedBoard] = useState(null)
+
+  function isBoardLocked(boardIdx) {
+    return boardIdx === lastPlayedBoard
+  }
 
   function handlePlay(boardIdx, cellIdx) {
     if (gameResult) return
     if (boardResults[boardIdx]) return
     if (boards[boardIdx][cellIdx]) return
+    if (isBoardLocked(boardIdx)) return
 
     const newBoards = boards.map((b, i) =>
       i === boardIdx ? b.map((v, j) => (j === cellIdx ? current : v)) : b
@@ -98,6 +104,7 @@ export default function Level9ThreeInARowGame() {
       }))
     } else {
       setCurrent(c => (c === 'X' ? 'O' : 'X'))
+      setLastPlayedBoard(boardIdx)
     }
   }
 
@@ -107,6 +114,7 @@ export default function Level9ThreeInARowGame() {
     setCurrent('X')
     setGameResult(null)
     setMetaWinLine(null)
+    setLastPlayedBoard(null)
     setShowModal(false)
   }
 
@@ -121,8 +129,9 @@ export default function Level9ThreeInARowGame() {
   const renderBoardWrap = (i) => {
     const isMetaWin = metaWinLine?.includes(i)
     const metaClass = isMetaWin ? ` meta-win-${gameResult}` : ''
+    const lockedClass = !gameResult && !boardResults[i] && isBoardLocked(i) ? ' board-locked' : ''
     return (
-      <div key={i} className={`l9-board-wrap${metaClass}`}>
+      <div key={i} className={`l9-board-wrap${metaClass}${lockedClass}`}>
         <div className="board-container">
           <Board
             squares={boards[i]}
@@ -200,6 +209,7 @@ export default function Level9ThreeInARowGame() {
               <p className="rules-section-head">How to play</p>
               <ul>
                 <li>Players alternate turns placing X or O on any open cell of any unfinished board.</li>
+                <li>You cannot play on the same board that was just played on in the previous turn.</li>
                 <li>Win a board by getting three of your symbols in a row on that board.</li>
               </ul>
 
