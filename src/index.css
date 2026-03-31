@@ -9,7 +9,21 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0f0f0f;
+  background: #06040e;
   color: #f0f0f0;
   font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+@keyframes aurora-h {
+  0%   { transform: translateX(-10%) scaleY(0.90) rotate(-1.0deg); opacity: 0.75; }
+  40%  { transform: translateX(  6%) scaleY(1.08) rotate( 0.5deg); opacity: 1.00; }
+  70%  { transform: translateX( 10%) scaleY(1.00) rotate( 1.0deg); opacity: 0.90; }
+  100% { transform: translateX( -6%) scaleY(0.95) rotate(-0.5deg); opacity: 0.85; }
+}
+
+@keyframes aurora-v {
+  0%   { transform: translateY(-8%)  scaleX(0.92) rotate( 0.5deg); opacity: 0.75; }
+  35%  { transform: translateY(  4%) scaleX(1.06) rotate(-0.3deg); opacity: 1.00; }
+  65%  { transform: translateY(  7%) scaleX(1.00) rotate( 0.8deg); opacity: 0.90; }
+  100% { transform: translateY( -5%) scaleX(0.94) rotate(-0.4deg); opacity: 0.85; }
 }
