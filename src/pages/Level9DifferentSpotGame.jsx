@@ -221,7 +221,8 @@ export default function Level9DifferentSpotGame() {
               <ul>
                 <li>Players alternate turns placing X or O on any open cell of any unfinished board.</li>
                 <li>Win a board by getting three of your symbols in a row on that board.</li>
-                <li>You cannot play on the same board you just played on — you must wait at least one of your turns before returning to it.</li>
+                <li>Neither player can play on the same board two turns in a row — they must play on one of the other boards available.</li>
+                <li>Neither player can play on the same board their opponent played on in the previous turn — they must play on one of the other boards available.</li>
               </ul>
 
               <p className="rules-section-head">Winning the match</p>

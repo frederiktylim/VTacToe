@@ -219,6 +219,7 @@ export default function Level9ThreeInARowGame() {
                 <li>You cannot play on the same board you played on in your previous turn.</li>
                 <li>You cannot play on the board your opponent just played on.</li>
                 <li>Win a board by getting three of your symbols in a row on that board.</li>
+                <li>There are no restrictions — you may play on any unfinished board on your turn.</li>
               </ul>
 
               <p className="rules-section-head">Winning the match</p>
