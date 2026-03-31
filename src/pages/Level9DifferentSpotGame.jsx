@@ -70,11 +70,28 @@ export default function Level9DifferentSpotGame() {
   const [lastBoardByPlayer, setLastBoardByPlayer] = useState({ X: null, O: null })
   const [showCantDoThat, setShowCantDoThat] = useState(false)
 
+  // Boards locked for the current player (own last + opponent's last), skipping finished boards
+  function getLockedBoards(results) {
+    const ownLast = lastBoardByPlayer[current]
+    const opponentLast = lastBoardByPlayer[current === 'X' ? 'O' : 'X']
+    const locked = new Set()
+    if (ownLast !== null && !results[ownLast]) locked.add(ownLast)
+    if (opponentLast !== null && !results[opponentLast]) locked.add(opponentLast)
+    return locked
+  }
+
+  // If every unfinished board is locked, the player is stuck and restrictions lift
+  function isStuck(locked, results) {
+    const unfinished = Array.from({ length: 9 }, (_, i) => i).filter(i => !results[i])
+    return unfinished.length > 0 && unfinished.every(i => locked.has(i))
+  }
+
   function handlePlay(boardIdx, cellIdx) {
     if (gameResult) return
     if (boardResults[boardIdx]) return
 
-    if (lastBoardByPlayer[current] !== null && boardIdx === lastBoardByPlayer[current]) {
+    const locked = getLockedBoards(boardResults)
+    if (!isStuck(locked, boardResults) && locked.has(boardIdx)) {
       setShowCantDoThat(true)
       return
     }
@@ -127,10 +144,13 @@ export default function Level9DifferentSpotGame() {
         : `${gameResult} wins the match!`
     : `${current}'s turn`
 
+  const lockedBoards = gameResult ? new Set() : getLockedBoards(boardResults)
+  const stuck = gameResult ? false : isStuck(lockedBoards, boardResults)
+
   const renderBoardWrap = (i) => {
     const isMetaWin = metaWinLine?.includes(i)
     const metaClass = isMetaWin ? ` meta-win-${gameResult}` : ''
-    const isRestricted = !gameResult && lastBoardByPlayer[current] === i && !boardResults[i]
+    const isRestricted = !stuck && lockedBoards.has(i) && !boardResults[i]
     return (
       <div key={i} className={`l9-board-wrap${metaClass}${isRestricted ? ' restricted-board' : ''}`}>
         <div className="board-container">
