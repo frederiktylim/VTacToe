@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Board from '../components/Board'
 import GameOverModal from '../components/GameOverModal'
+import ToggleSwitch from '../components/ToggleSwitch'
+import { bestSingleBoardMove } from '../utils/ai'
 import '../App.css'
 
 const WINS = [
@@ -26,8 +28,10 @@ export default function RegularGame() {
   const [current, setCurrent] = useState('X')
   const [result, setResult] = useState(null)
   const [showModal, setShowModal] = useState(false)
+  const [playComputer, setPlayComputer] = useState(false)
 
   function handlePlay(i) {
+    if (playComputer && current === 'O') return
     if (result || squares[i]) return
     const next = squares.slice()
     next[i] = current
@@ -48,6 +52,25 @@ export default function RegularGame() {
     setShowModal(false)
   }
 
+  useEffect(() => {
+    if (!playComputer || current !== 'O' || result) return
+    const timer = setTimeout(() => {
+      const cellIdx = bestSingleBoardMove(squares)
+      if (cellIdx === -1) return
+      const next = squares.slice()
+      next[cellIdx] = 'O'
+      const gameResult = checkWinner(next)
+      setSquares(next)
+      if (gameResult) {
+        setResult(gameResult)
+        setShowModal(true)
+      } else {
+        setCurrent('X')
+      }
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [current, playComputer, result, squares])
+
   const statusText = result
     ? result.winner === 'draw' ? "It's a draw!" : `${result.winner} wins!`
     : `${current}'s turn`
@@ -61,6 +84,11 @@ export default function RegularGame() {
       <Board squares={squares} winLine={result?.line ?? null} onPlay={handlePlay} />
       <button className="reset-btn" onClick={handleReset}>New Game</button>
       <button className="back-btn" onClick={() => navigate('/')}>Menu</button>
+      <ToggleSwitch
+        checked={playComputer}
+        onChange={e => setPlayComputer(e.target.checked)}
+        label="Play Computer"
+      />
 
       {showModal && (
         <GameOverModal

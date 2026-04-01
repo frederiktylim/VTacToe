@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Board from '../components/Board'
 import GameOverModal from '../components/GameOverModal'
+import ToggleSwitch from '../components/ToggleSwitch'
+import { bestSingleBoardMove } from '../utils/ai'
 import './Level9Game.css'
 
 const WIN_PATTERNS = [
@@ -53,8 +55,10 @@ export default function Level9RandomGame() {
   const [gameResult, setGameResult] = useState(null)
   const [showModal, setShowModal] = useState(false)
   const [activeBoard, setActiveBoard] = useState(() => pickRandomBoard(Array(9).fill(null)))
+  const [playComputer, setPlayComputer] = useState(false)
 
   function handlePlay(boardIdx, cellIdx) {
+    if (playComputer && current === 'O') return
     if (gameResult) return
     if (boardIdx !== activeBoard) return
     if (boardResults[boardIdx]) return
@@ -90,6 +94,32 @@ export default function Level9RandomGame() {
     setShowModal(false)
     setActiveBoard(pickRandomBoard(emptyResults))
   }
+
+  useEffect(() => {
+    if (!playComputer || current !== 'O' || gameResult || activeBoard === null) return
+    const timer = setTimeout(() => {
+      const cellIdx = bestSingleBoardMove(boards[activeBoard])
+      if (cellIdx === -1) return
+      const newBoards = boards.map((b, i) =>
+        i === activeBoard ? b.map((v, j) => (j === cellIdx ? 'O' : v)) : b
+      )
+      const newResult = checkBoard(newBoards[activeBoard])
+      const newBoardResults = boardResults.map((r, i) =>
+        i === activeBoard ? (newResult ?? r) : r
+      )
+      setBoards(newBoards)
+      setBoardResults(newBoardResults)
+      const overall = overallResult(newBoardResults)
+      if (overall !== null) {
+        setGameResult(overall)
+        setShowModal(true)
+      } else {
+        setActiveBoard(pickRandomBoard(newBoardResults))
+        setCurrent('X')
+      }
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [current, playComputer, gameResult, boards, boardResults, activeBoard])
 
   const statusText = gameResult
     ? gameResult === 'draw' ? "It's a draw!" : `${gameResult} wins the match!`
@@ -146,6 +176,11 @@ export default function Level9RandomGame() {
         <button className="reset-btn" onClick={handleReset}>New Game</button>
         <button className="back-btn" onClick={() => navigate('/level-9')}>Menu</button>
       </div>
+      <ToggleSwitch
+        checked={playComputer}
+        onChange={e => setPlayComputer(e.target.checked)}
+        label="Play Computer"
+      />
 
       {showModal && (
         <GameOverModal

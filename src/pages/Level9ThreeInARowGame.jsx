@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Board from '../components/Board'
 import GameOverModal from '../components/GameOverModal'
+import ToggleSwitch from '../components/ToggleSwitch'
+import { bestMultiBoardMove } from '../utils/ai'
 import './Level9Game.css'
 
 const WIN_PATTERNS = [
@@ -68,7 +70,10 @@ export default function Level9ThreeInARowGame() {
   const [metaWinLine, setMetaWinLine] = useState(null) // [a, b, c] | null
   const [showModal, setShowModal] = useState(false)
   const [showRules, setShowRules] = useState(false)
+  const [playComputer, setPlayComputer] = useState(false)
+
   function handlePlay(boardIdx, cellIdx) {
+    if (playComputer && current === 'O') return
     if (gameResult) return
     if (boardResults[boardIdx]) return
     if (boards[boardIdx][cellIdx]) return
@@ -102,6 +107,34 @@ export default function Level9ThreeInARowGame() {
     setMetaWinLine(null)
     setShowModal(false)
   }
+
+  useEffect(() => {
+    if (!playComputer || current !== 'O' || gameResult) return
+    const timer = setTimeout(() => {
+      const available = boardResults.map((r, i) => r === null ? i : null).filter(i => i !== null)
+      const move = bestMultiBoardMove(boards, boardResults, available)
+      if (!move) return
+      const { boardIdx, cellIdx } = move
+      const newBoards = boards.map((b, i) =>
+        i === boardIdx ? b.map((v, j) => (j === cellIdx ? 'O' : v)) : b
+      )
+      const newResult = checkBoard(newBoards[boardIdx])
+      const newBoardResults = boardResults.map((r, i) =>
+        i === boardIdx ? (newResult ?? r) : r
+      )
+      setBoards(newBoards)
+      setBoardResults(newBoardResults)
+      const overall = overallResult(newBoardResults)
+      if (overall !== null) {
+        setGameResult(overall.winner)
+        setMetaWinLine(overall.metaLine)
+        setShowModal(true)
+      } else {
+        setCurrent('X')
+      }
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [current, playComputer, gameResult, boards, boardResults])
 
   const statusText = gameResult
     ? gameResult === 'draw'
@@ -157,6 +190,11 @@ export default function Level9ThreeInARowGame() {
         <button className="back-btn" onClick={() => navigate('/level-9')}>Menu</button>
         <button className="rules-btn" onClick={() => setShowRules(true)}>Rules</button>
       </div>
+      <ToggleSwitch
+        checked={playComputer}
+        onChange={e => setPlayComputer(e.target.checked)}
+        label="Play Computer"
+      />
 
       {showModal && (
         <GameOverModal

@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Board from '../components/Board'
 import GameOverModal from '../components/GameOverModal'
+import ToggleSwitch from '../components/ToggleSwitch'
+import { bestMultiBoardMove } from '../utils/ai'
 import './TripleGame.css'
 
 const WIN_PATTERNS = [
@@ -46,7 +48,10 @@ export default function TripleGame() {
   const [current, setCurrent] = useState('X')
   const [gameResult, setGameResult] = useState(null)
   const [showModal, setShowModal] = useState(false)
+  const [playComputer, setPlayComputer] = useState(false)
+
   function handlePlay(boardIdx, cellIdx) {
+    if (playComputer && current === 'O') return
     if (gameResult) return
     if (boardResults[boardIdx]) return
     if (boards[boardIdx][cellIdx]) return
@@ -79,11 +84,32 @@ export default function TripleGame() {
     setShowModal(false)
   }
 
-  const boardLabel = (result) => {
-    if (!result) return null
-    if (result.winner === 'draw') return 'Draw'
-    return `${result.winner} wins`
-  }
+  useEffect(() => {
+    if (!playComputer || current !== 'O' || gameResult) return
+    const timer = setTimeout(() => {
+      const available = boardResults.map((r, i) => r === null ? i : null).filter(i => i !== null)
+      const move = bestMultiBoardMove(boards, boardResults, available)
+      if (!move) return
+      const { boardIdx, cellIdx } = move
+      const newBoards = boards.map((b, i) =>
+        i === boardIdx ? b.map((v, j) => (j === cellIdx ? 'O' : v)) : b
+      )
+      const newResult = checkBoard(newBoards[boardIdx])
+      const newBoardResults = boardResults.map((r, i) =>
+        i === boardIdx ? (newResult ?? r) : r
+      )
+      setBoards(newBoards)
+      setBoardResults(newBoardResults)
+      const overall = overallResult(newBoardResults)
+      if (overall !== null) {
+        setGameResult(overall)
+        setShowModal(true)
+      } else {
+        setCurrent('X')
+      }
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [current, playComputer, gameResult, boards, boardResults])
 
   const statusText = gameResult
     ? gameResult === 'draw' ? "It's a draw!" : `${gameResult} wins the match!`
@@ -128,6 +154,11 @@ export default function TripleGame() {
         <button className="reset-btn" onClick={handleReset}>New Game</button>
         <button className="back-btn" onClick={() => navigate('/')}>Menu</button>
       </div>
+      <ToggleSwitch
+        checked={playComputer}
+        onChange={e => setPlayComputer(e.target.checked)}
+        label="Play Computer"
+      />
 
       {showModal && (
         <GameOverModal

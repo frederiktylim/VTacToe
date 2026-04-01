@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Board from '../components/Board'
 import GameOverModal from '../components/GameOverModal'
+import ToggleSwitch from '../components/ToggleSwitch'
+import { bestMultiBoardMove } from '../utils/ai'
 import './Level9Game.css'
 
 const WIN_PATTERNS = [
@@ -68,6 +70,7 @@ export default function Level9DifferentSpotGame() {
   const [showRules, setShowRules] = useState(false)
   const [lastBoardByPlayer, setLastBoardByPlayer] = useState({ X: null, O: null })
   const [showCantDoThat, setShowCantDoThat] = useState(false)
+  const [playComputer, setPlayComputer] = useState(false)
 
   // Boards locked for the current player (own last + opponent's last), skipping finished boards
   function getLockedBoards(results) {
@@ -86,6 +89,7 @@ export default function Level9DifferentSpotGame() {
   }
 
   function handlePlay(boardIdx, cellIdx) {
+    if (playComputer && current === 'O') return
     if (gameResult) return
     if (boardResults[boardIdx]) return
 
@@ -129,6 +133,44 @@ export default function Level9DifferentSpotGame() {
     setShowCantDoThat(false)
     setLastBoardByPlayer({ X: null, O: null })
   }
+
+  useEffect(() => {
+    if (!playComputer || current !== 'O' || gameResult) return
+    const timer = setTimeout(() => {
+      // Compute locked boards for O
+      const ownLast = lastBoardByPlayer['O']
+      const oppLast = lastBoardByPlayer['X']
+      const locked = new Set()
+      if (ownLast !== null && !boardResults[ownLast]) locked.add(ownLast)
+      if (oppLast !== null && !boardResults[oppLast]) locked.add(oppLast)
+      const unfinished = Array.from({ length: 9 }, (_, i) => i).filter(i => !boardResults[i])
+      const stuck = unfinished.length > 0 && unfinished.every(i => locked.has(i))
+      const available = unfinished.filter(i => stuck || !locked.has(i))
+
+      const move = bestMultiBoardMove(boards, boardResults, available)
+      if (!move) return
+      const { boardIdx, cellIdx } = move
+      const newBoards = boards.map((b, i) =>
+        i === boardIdx ? b.map((v, j) => (j === cellIdx ? 'O' : v)) : b
+      )
+      const newResult = checkBoard(newBoards[boardIdx])
+      const newBoardResults = boardResults.map((r, i) =>
+        i === boardIdx ? (newResult ?? r) : r
+      )
+      setBoards(newBoards)
+      setBoardResults(newBoardResults)
+      setLastBoardByPlayer(prev => ({ ...prev, O: boardIdx }))
+      const overall = overallResult(newBoardResults)
+      if (overall !== null) {
+        setGameResult(overall.winner)
+        setMetaWinLine(overall.metaLine)
+        setShowModal(true)
+      } else {
+        setCurrent('X')
+      }
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [current, playComputer, gameResult, boards, boardResults, lastBoardByPlayer])
 
   const statusText = gameResult
     ? gameResult === 'draw'
@@ -188,6 +230,11 @@ export default function Level9DifferentSpotGame() {
         <button className="back-btn" onClick={() => navigate('/level-9')}>Menu</button>
         <button className="rules-btn" onClick={() => setShowRules(true)}>Rules</button>
       </div>
+      <ToggleSwitch
+        checked={playComputer}
+        onChange={e => setPlayComputer(e.target.checked)}
+        label="Play Computer"
+      />
 
       {showModal && (
         <GameOverModal
