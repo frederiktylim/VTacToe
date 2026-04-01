@@ -95,6 +95,25 @@
   box-shadow: 0 0 14px 3px rgba(82, 168, 224, 0.55);
 }
 
+/* ── Random mode: highlighted (active) board ── */
+.l9-board-wrap.board-random-active {
+  background:
+    linear-gradient(#0f0f0f, #0f0f0f) padding-box,
+    linear-gradient(135deg, #ffe066, #ffaa00) border-box;
+  box-shadow: 0 0 18px 4px rgba(255, 200, 50, 0.55);
+  animation: random-pulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes random-pulse {
+  from { box-shadow: 0 0 12px 2px rgba(255, 200, 50, 0.45); }
+  to   { box-shadow: 0 0 24px 7px rgba(255, 200, 50, 0.70); }
+}
+
+/* ── Random mode: non-active unfinished boards ── */
+.l9-board-wrap.board-random-dim {
+  opacity: 0.35;
+}
+
 /* ── Locked board (cannot play here this turn) ── */
 .l9-board-wrap.board-locked {
   opacity: 0.4;

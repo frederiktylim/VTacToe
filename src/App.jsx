@@ -7,6 +7,7 @@ import Level9Menu from './pages/Level9Menu'
 import Level9RegularGame from './pages/Level9RegularGame'
 import Level9ThreeInARowGame from './pages/Level9ThreeInARowGame'
 import Level9DifferentSpotGame from './pages/Level9DifferentSpotGame'
+import Level9RandomGame from './pages/Level9RandomGame'
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
       <Route path="/level-9/regular" element={<Level9RegularGame />} />
       <Route path="/level-9/three-in-a-row" element={<Level9ThreeInARowGame />} />
       <Route path="/level-9/different-spot" element={<Level9DifferentSpotGame />} />
+      <Route path="/level-9/random" element={<Level9RandomGame />} />
     </Routes>
   )
 }
